@@ -58,7 +58,7 @@ long timeSinceKnock() {
 }
 
 boolean checkForKnock() {
-  float knockVal = analogRead(A2);
+  float knockVal = analogRead(BUZZER_PIN);
   return knockVal > KNOCK_THRESHOLD;
 }
 
@@ -77,27 +77,27 @@ void reset() {
 }
 
 void successTone() {
-  pinMode(A2, OUTPUT);
-  tone(A2, 500);
+  pinMode(BUZZER_PIN, OUTPUT);
+  tone(BUZZER_PIN, 500);
   delay(200);
-  tone(A2, 1000);
+  tone(BUZZER_PIN, 1000);
   delay(200);
-  tone(A2, 1250);
+  tone(BUZZER_PIN, 1250);
   delay(200);
-  tone(A2, 1500);
+  tone(BUZZER_PIN, 1500);
   delay(200);
-  noTone(A2);
+  noTone(BUZZER_PIN);
   delay(200);
-  pinMode(A2, INPUT);
+  pinMode(BUZZER_PIN, INPUT);
 }
 
 void failTone() {
-  pinMode(A2, OUTPUT);
-  tone(A2, 1000);
+  pinMode(BUZZER_PIN, OUTPUT);
+  tone(BUZZER_PIN, 1000);
   delay(200);
-  tone(A2, 500);
+  tone(BUZZER_PIN, 500);
   delay(200);
-  noTone(A2);
+  noTone(BUZZER_PIN);
   delay(200);
-  pinMode(A2, INPUT);
+  pinMode(BUZZER_PIN, INPUT);
 }
