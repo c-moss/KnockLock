@@ -6,7 +6,7 @@ const int KNOCK_CODE[] = {2, 3, 2};
 const int KNOCK_CODE_LENGTH = 3;  //length of knock code array
 const long INACTIVITY_TIMEOUT = 3000; //number of ms to wait before resetting state
 const long KNOCK_RECEIVED_DELAY = 100; //number of ms to wait after getting a knock so that we don't accidentally count it multiple times
-const long KNOCK_CODE_GROUP_DELAY = 500; //number of ms to wait before starting a new knock code group;
+const long KNOCK_CODE_GROUP_DELAY = 700; //number of ms to wait before starting a new knock code group;
 
 long knockTime = 0;
 int knocksReceived = 0;
@@ -16,7 +16,6 @@ void setup() {
   analogReadResolution(12); //Set analog input resolution to max, 12-bits
 
   pinMode(LOCK_PIN, OUTPUT);
-  //Serial.begin(9600);
 }
 
 void loop() {
@@ -24,30 +23,23 @@ void loop() {
     if (knocksReceived == KNOCK_CODE[knockCodeProgress]) {
       knockCodeProgress++;
       knocksReceived = 0;
-      //Serial.print(knockCodeProgress);
-      //Serial.println(" knock code progress");
       if (knockCodeProgress >= KNOCK_CODE_LENGTH) {
-        unlock();
         successTone();
+        unlock();
       }
     } else {  // if the knock code group delay has elapsed without enough knocks, reset
-      reset();
-      failTone();
+      fail();
     }
   }
   if (checkForKnock() && timeSinceKnock() > KNOCK_RECEIVED_DELAY) {
     knockTime = millis();
     knocksReceived++;
-    //Serial.print(knocksReceived);
-    //Serial.println(" knocks received");
   }
   if (knocksReceived > KNOCK_CODE[knockCodeProgress]) {  // if the number of knocks exceeds the number expected, instantly reset
-    reset();
-    failTone();
+    fail();
   }
-  if ((knocksReceived > 0 || knockCodeProgress > 0) && timeSinceKnock() > INACTIVITY_TIMEOUT) {
-    reset();
-    failTone();
+  if ((knocksReceived > 0 || knockCodeProgress > 0) && timeSinceKnock() > INACTIVITY_TIMEOUT) { // if knocks have been recorded but the inactivity timeout has elapsed, reset
+    fail();
   }
 
   delay(1);
@@ -63,12 +55,18 @@ boolean checkForKnock() {
 }
 
 void unlock() {
-  //Serial.println("Unlock!");
   reset();
   digitalWrite(LOCK_PIN, HIGH);
   delay(500);
   digitalWrite(LOCK_PIN, LOW);
   delay(1000);  //delay for a second so that the noise of the deadbolts unlocking isn't interpreted as a knock
+}
+
+void fail() {
+  if (knocksReceived > 1 || knockCodeProgress > 0) {  // don't play the failure tone for a single knock
+    failTone();
+  }
+  reset();
 }
 
 void reset() {
