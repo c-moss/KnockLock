@@ -2,7 +2,7 @@ const int BUZZER_PIN = A2;
 const int LOCK_PIN = 5;
 
 const long KNOCK_THRESHOLD = 100; //Based on having 1M resistor connected across buzzer
-const int KNOCK_CODE[] = {2, 3, 2};
+const int KNOCK_CODE[] = {3, 2, 1};  //SECRET KNOCK CODE SEQUENCE!
 const int KNOCK_CODE_LENGTH = 3;  //length of knock code array
 const long INACTIVITY_TIMEOUT = 3000; //number of ms to wait before resetting state
 const long KNOCK_RECEIVED_DELAY = 100; //number of ms to wait after getting a knock so that we don't accidentally count it multiple times
